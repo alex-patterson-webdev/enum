@@ -9,7 +9,7 @@ use Arp\Enum\EnumInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Arp\Enum\AbstractEnum
+ * @covers  \Arp\Enum\AbstractEnum
  *
  * @author  Alex Patterson <alex.patterson.webdev@gmail.com>
  * @package ArpTest\Enum
@@ -17,17 +17,27 @@ use PHPUnit\Framework\TestCase;
 class AbstractEnumTest extends TestCase
 {
     /**
+     * @var EnumInterface
+     */
+    private EnumInterface $enum;
+
+    public function setUp(): void
+    {
+        $this->enum = new class() extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+    }
+
+    /**
      * Assert the class implements EnumInterface
      */
     public function testImplementsEnumInterface(): void
     {
-        $enum = new class(1) extends AbstractEnum {
-            public const TRUE = 1;
-            public const FALSE = 0;
-            public const MAYBE = 2;
-        };
-
-        $this->assertInstanceOf(EnumInterface::class, $enum);
+        $this->assertInstanceOf(EnumInterface::class, $this->enum);
     }
 
     /**
@@ -47,5 +57,74 @@ class AbstractEnumTest extends TestCase
             public const FALSE = 0;
             public const MAYBE = 2;
         };
+    }
+
+    /**
+     * Assert that toArray() will return a array map of the class constants
+     *
+     * @throws \ReflectionException
+     */
+    public function testToArray(): void
+    {
+        $expected = [
+            'FOO' => -1,
+            'BAR' => true,
+            'BAZ' => 1.223,
+            'FAB' => 'hello',
+            'FOB' => 1234,
+        ];
+
+        $this->assertSame($expected, $this->enum::toArray());
+    }
+
+    /**
+     * Assert calls to hasKey() return the expected bool
+     *
+     * @throws \ReflectionException
+     */
+    public function testHasKey(): void
+    {
+        $this->assertTrue($this->enum::hasKey('FOO'));
+        $this->assertTrue($this->enum::hasKey('BAR'));
+        $this->assertTrue($this->enum::hasKey('BAZ'));
+        $this->assertFalse($this->enum::hasKey('HELLO'));
+        $this->assertFalse($this->enum::hasKey('TEST'));
+        $this->assertFalse($this->enum::hasKey('ABC'));
+    }
+
+    /**
+     * Assert the result of getKeys()
+     *
+     * @throws \ReflectionException
+     */
+    public function testGetKeys(): void
+    {
+        $expected = [
+            'FOO',
+            'BAR',
+            'BAZ',
+            'FAB',
+            'FOB',
+        ];
+
+        $this->assertSame($expected, $this->enum::getKeys());
+    }
+
+    /**
+     * Assert the result of testGetValues()
+     *
+     * @throws \ReflectionException
+     */
+    public function testGetValues(): void
+    {
+        $expected = [
+            -1,
+            true,
+            1.223,
+            'hello',
+            1234,
+        ];
+
+        $this->assertSame($expected, $this->enum::getValues());
     }
 }

@@ -18,9 +18,9 @@ interface EnumInterface
     public function __construct($value);
 
     /**
-     * @return string|int|null
+     * @return string|null
      */
-    public function getKey();
+    public function getKey(): ?string;
 
     /**
      * Return the current value
@@ -32,11 +32,11 @@ interface EnumInterface
     /**
      * Check if a constant key exists
      *
-     * @param mixed $name
+     * @param string $name
      *
      * @return bool
      */
-    public static function hasKey($name): bool;
+    public static function hasKey(string $name): bool;
 
     /**
      * Check if a constant value exists
