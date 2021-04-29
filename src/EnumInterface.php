@@ -11,13 +11,6 @@ namespace Arp\Enum;
 interface EnumInterface
 {
     /**
-     * @param mixed $value
-     *
-     * @throws \UnexpectedValueException
-     */
-    public function __construct($value);
-
-    /**
      * @return string|null
      */
     public function getKey(): ?string;

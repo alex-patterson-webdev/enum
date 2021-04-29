@@ -18,13 +18,12 @@ abstract class AbstractEnum implements EnumInterface
     /**
      * @var array<mixed>
      */
-    private static array $constants;
+    private static array $constants = [];
 
     /**
      * @param mixed $value
      *
      * @throws \InvalidArgumentException
-     * @throws \ReflectionException
      */
     public function __construct($value = null)
     {
@@ -37,8 +36,6 @@ abstract class AbstractEnum implements EnumInterface
 
     /**
      * @return string|null
-     *
-     * @throws \ReflectionException
      */
     public function getKey(): ?string
     {
@@ -59,7 +56,6 @@ abstract class AbstractEnum implements EnumInterface
      * @param mixed $value
      *
      * @throws \InvalidArgumentException
-     * @throws \ReflectionException
      */
     private function setValue($value): void
     {
@@ -82,8 +78,6 @@ abstract class AbstractEnum implements EnumInterface
      * @param string $name
      *
      * @return bool
-     *
-     * @throws \ReflectionException
      */
     public static function hasKey(string $name): bool
     {
@@ -96,8 +90,6 @@ abstract class AbstractEnum implements EnumInterface
      * @param mixed $value
      *
      * @return bool
-     *
-     * @throws \ReflectionException
      */
     public static function hasValue($value): bool
     {
@@ -108,8 +100,6 @@ abstract class AbstractEnum implements EnumInterface
      * Return an numerically indexed array of the constants names
      *
      * @return array<int, string>
-     *
-     * @throws \ReflectionException
      */
     public static function getKeys(): array
     {
@@ -120,8 +110,6 @@ abstract class AbstractEnum implements EnumInterface
      * Return an numerically indexed array of the constants values
      *
      * @return array<int, string>
-     *
-     * @throws \ReflectionException
      */
     public static function getValues(): array
     {
@@ -134,8 +122,6 @@ abstract class AbstractEnum implements EnumInterface
      * @param mixed $value
      *
      * @return string|null
-     *
-     * @throws \ReflectionException
      */
     public static function getKeyByValue($value): ?string
     {
@@ -148,8 +134,6 @@ abstract class AbstractEnum implements EnumInterface
      * @param string $key
      *
      * @return string|null
-     *
-     * @throws \ReflectionException
      */
     public static function getValueByKey(string $key): ?string
     {
@@ -160,15 +144,19 @@ abstract class AbstractEnum implements EnumInterface
      * Return a key value map, with the array keys being the constant names with their associated constant values
      *
      * @return array<string, string>
-     *
-     * @throws \ReflectionException
      */
     public static function toArray(): array
     {
         $className = static::class;
 
         if (!isset(static::$constants[$className])) {
-            static::$constants[$className] = (new \ReflectionClass($className))->getConstants();
+            try {
+                $reflectionClass = new \ReflectionClass($className);
+            } catch (\ReflectionException $e) {
+                return [];
+            }
+
+            static::$constants[$className] = $reflectionClass->getConstants();
         }
 
         return static::$constants[$className];

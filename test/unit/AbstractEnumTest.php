@@ -61,8 +61,6 @@ class AbstractEnumTest extends TestCase
 
     /**
      * Assert that toArray() will return a array map of the class constants
-     *
-     * @throws \ReflectionException
      */
     public function testToArray(): void
     {
@@ -79,8 +77,6 @@ class AbstractEnumTest extends TestCase
 
     /**
      * Assert calls to hasKey() return the expected bool
-     *
-     * @throws \ReflectionException
      */
     public function testHasKey(): void
     {
@@ -94,8 +90,6 @@ class AbstractEnumTest extends TestCase
 
     /**
      * Assert the result of getKeys()
-     *
-     * @throws \ReflectionException
      */
     public function testGetKeys(): void
     {
@@ -112,8 +106,6 @@ class AbstractEnumTest extends TestCase
 
     /**
      * Assert the result of testGetValues()
-     *
-     * @throws \ReflectionException
      */
     public function testGetValues(): void
     {
