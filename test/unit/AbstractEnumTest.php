@@ -119,4 +119,92 @@ class AbstractEnumTest extends TestCase
 
         $this->assertSame($expected, $this->enum::getValues());
     }
+
+    /**
+     * Assert that the class constant key can be returned by it's matched value, or NULL if non-existing
+     *
+     * @param mixed $expectedKey
+     * @param mixed $value
+     *
+     * @dataProvider getKeyByValueData
+     */
+    public function testGetKeyByValue($expectedKey, $value): void
+    {
+        $this->assertSame($expectedKey, $this->enum::getKeyByValue($value));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getKeyByValueData(): array
+    {
+        return [
+            [
+                'FOO',
+                -1,
+            ],
+            [
+                'BAR',
+                true,
+            ],
+            [
+                'FAB',
+                'hello',
+            ],
+            [
+                'BAZ',
+                1.223,
+            ],
+            [
+                null,
+                'not-valid-vale',
+            ],
+            [
+                null,
+                0,
+            ],
+        ];
+    }
+
+    /**
+     * Assert that the class constant value can be returned by it's matched key, or NULL if non-existing
+     *
+     * @param mixed  $expectedValue
+     * @param string $key
+     *
+     * @dataProvider getValueByKeyData
+     */
+    public function testGetValueByKey($expectedValue, string $key): void
+    {
+        $this->assertSame($expectedValue, $this->enum::getValueByKey($key));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getValueByKeyData(): array
+    {
+        return [
+            [
+                -1,
+                'FOO',
+            ],
+            [
+                true,
+                'BAR',
+            ],
+            [
+                'hello',
+                'FAB',
+            ],
+            [
+                1.223,
+                'BAZ',
+            ],
+            [
+                null,
+                'testing-not-found-value',
+            ],
+        ];
+    }
 }

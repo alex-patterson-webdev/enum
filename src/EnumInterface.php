@@ -59,18 +59,18 @@ interface EnumInterface
      *
      * @param mixed $value
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getKeyByValue($value): ?string;
+    public static function getKeyByValue($value);
 
     /**
      * Return a constant value matching $key
      *
      * @param string $key
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getValueByKey(string $key): ?string;
+    public static function getValueByKey(string $key);
 
     /**
      * Return a key value map, with the array keys being the constant names with their associated constant values

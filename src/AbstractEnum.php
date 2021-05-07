@@ -121,11 +121,13 @@ abstract class AbstractEnum implements EnumInterface
      *
      * @param mixed $value
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getKeyByValue($value): ?string
+    public static function getKeyByValue($value)
     {
-        return array_flip(static::toArray())[$value] ?? null;
+        $key = array_search($value, static::toArray(), true);
+
+        return (false === $key) ? null : $key;
     }
 
     /**
@@ -133,9 +135,9 @@ abstract class AbstractEnum implements EnumInterface
      *
      * @param string $key
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getValueByKey(string $key): ?string
+    public static function getValueByKey(string $key)
     {
         return static::toArray()[$key] ?? null;
     }
@@ -143,7 +145,7 @@ abstract class AbstractEnum implements EnumInterface
     /**
      * Return a key value map, with the array keys being the constant names with their associated constant values
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public static function toArray(): array
     {
