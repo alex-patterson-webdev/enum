@@ -207,4 +207,67 @@ class AbstractEnumTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * Assert the expected key is returned from getKey() when using instance based methods of the enum.
+     */
+    public function testGetKey(): void
+    {
+        $value = 1.223;
+        $expectedKey = 'BAZ';
+
+        $enum = new class($value) extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+
+        $this->assertSame($expectedKey, $enum->getKey());
+    }
+
+    /**
+     * Assert the expected value is returned from getValue() when using instance based methods of the enum.
+     *
+     * @param mixed $value
+     *
+     * @dataProvider getGetValueData
+     */
+    public function testGetValue($value): void
+    {
+        $enum = new class($value) extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+
+        $this->assertSame($value, $enum->getValue());
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getGetValueData(): array
+    {
+        return [
+            [
+                null,
+            ],
+            [
+                1234,
+            ],
+            [
+                'hello',
+            ],
+            [
+                -1,
+            ],
+            [
+                true,
+            ],
+        ];
+    }
 }
