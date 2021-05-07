@@ -11,16 +11,9 @@ namespace Arp\Enum;
 interface EnumInterface
 {
     /**
-     * @param mixed $value
-     *
-     * @throws \UnexpectedValueException
+     * @return string|null
      */
-    public function __construct($value);
-
-    /**
-     * @return string|int|null
-     */
-    public function getKey();
+    public function getKey(): ?string;
 
     /**
      * Return the current value
@@ -32,11 +25,11 @@ interface EnumInterface
     /**
      * Check if a constant key exists
      *
-     * @param mixed $name
+     * @param string $name
      *
      * @return bool
      */
-    public static function hasKey($name): bool;
+    public static function hasKey(string $name): bool;
 
     /**
      * Check if a constant value exists
@@ -66,18 +59,18 @@ interface EnumInterface
      *
      * @param mixed $value
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getKeyByValue($value): ?string;
+    public static function getKeyByValue($value);
 
     /**
      * Return a constant value matching $key
      *
      * @param string $key
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getValueByKey(string $key): ?string;
+    public static function getValueByKey(string $key);
 
     /**
      * Return a key value map, with the array keys being the constant names with their associated constant values

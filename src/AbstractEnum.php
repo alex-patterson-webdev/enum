@@ -18,16 +18,16 @@ abstract class AbstractEnum implements EnumInterface
     /**
      * @var array<mixed>
      */
-    private static array $constants;
+    private static array $constants = [];
 
     /**
      * @param mixed $value
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($value)
+    public function __construct($value = null)
     {
-        if ($value instanceof static) {
+        if ($value instanceof EnumInterface) {
             $value = $value->getValue();
         }
 
@@ -35,9 +35,9 @@ abstract class AbstractEnum implements EnumInterface
     }
 
     /**
-     * @return string|int|null
+     * @return string|null
      */
-    public function getKey()
+    public function getKey(): ?string
     {
         return static::getKeyByValue($this->value);
     }
@@ -59,7 +59,7 @@ abstract class AbstractEnum implements EnumInterface
      */
     private function setValue($value): void
     {
-        if (!static::hasValue($value)) {
+        if (null !== $value && !static::hasValue($value)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'The value \'%s\' for enum class \'%s\' could not be mapped to a valid constant value',
@@ -75,11 +75,11 @@ abstract class AbstractEnum implements EnumInterface
     /**
      * Check if a constant key exists
      *
-     * @param mixed $name
+     * @param string $name
      *
      * @return bool
      */
-    public static function hasKey($name): bool
+    public static function hasKey(string $name): bool
     {
         return array_key_exists($name, static::toArray());
     }
@@ -121,11 +121,13 @@ abstract class AbstractEnum implements EnumInterface
      *
      * @param mixed $value
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getKeyByValue($value): ?string
+    public static function getKeyByValue($value)
     {
-        return array_flip(static::toArray())[$value] ?? null;
+        $key = array_search($value, static::toArray(), true);
+
+        return (false === $key) ? null : $key;
     }
 
     /**
@@ -133,9 +135,9 @@ abstract class AbstractEnum implements EnumInterface
      *
      * @param string $key
      *
-     * @return string|null
+     * @return mixed
      */
-    public static function getValueByKey(string $key): ?string
+    public static function getValueByKey(string $key)
     {
         return static::toArray()[$key] ?? null;
     }
@@ -143,14 +145,22 @@ abstract class AbstractEnum implements EnumInterface
     /**
      * Return a key value map, with the array keys being the constant names with their associated constant values
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public static function toArray(): array
     {
-        if (!isset(static::$constants)) {
-            static::$constants = (new \ReflectionClass(static::class))->getConstants();
+        $className = static::class;
+
+        if (!isset(static::$constants[$className])) {
+            try {
+                $reflectionClass = new \ReflectionClass($className);
+            } catch (\ReflectionException $e) {
+                return [];
+            }
+
+            static::$constants[$className] = $reflectionClass->getConstants();
         }
 
-        return static::$constants;
+        return static::$constants[$className];
     }
 }

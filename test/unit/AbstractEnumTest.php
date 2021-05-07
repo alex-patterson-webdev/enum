@@ -9,7 +9,7 @@ use Arp\Enum\EnumInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Arp\Enum\AbstractEnum
+ * @covers  \Arp\Enum\AbstractEnum
  *
  * @author  Alex Patterson <alex.patterson.webdev@gmail.com>
  * @package ArpTest\Enum
@@ -17,17 +17,27 @@ use PHPUnit\Framework\TestCase;
 class AbstractEnumTest extends TestCase
 {
     /**
+     * @var EnumInterface
+     */
+    private EnumInterface $enum;
+
+    public function setUp(): void
+    {
+        $this->enum = new class() extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+    }
+
+    /**
      * Assert the class implements EnumInterface
      */
     public function testImplementsEnumInterface(): void
     {
-        $enum = new class(1) extends AbstractEnum {
-            public const TRUE = 1;
-            public const FALSE = 0;
-            public const MAYBE = 2;
-        };
-
-        $this->assertInstanceOf(EnumInterface::class, $enum);
+        $this->assertInstanceOf(EnumInterface::class, $this->enum);
     }
 
     /**
@@ -47,5 +57,231 @@ class AbstractEnumTest extends TestCase
             public const FALSE = 0;
             public const MAYBE = 2;
         };
+    }
+
+    /**
+     * Assert that toArray() will return a array map of the class constants
+     */
+    public function testToArray(): void
+    {
+        $expected = [
+            'FOO' => -1,
+            'BAR' => true,
+            'BAZ' => 1.223,
+            'FAB' => 'hello',
+            'FOB' => 1234,
+        ];
+
+        $this->assertSame($expected, $this->enum::toArray());
+    }
+
+    /**
+     * Assert calls to hasKey() return the expected bool
+     */
+    public function testHasKey(): void
+    {
+        $this->assertTrue($this->enum::hasKey('FOO'));
+        $this->assertTrue($this->enum::hasKey('BAR'));
+        $this->assertTrue($this->enum::hasKey('BAZ'));
+        $this->assertFalse($this->enum::hasKey('HELLO'));
+        $this->assertFalse($this->enum::hasKey('TEST'));
+        $this->assertFalse($this->enum::hasKey('ABC'));
+    }
+
+    /**
+     * Assert the result of getKeys()
+     */
+    public function testGetKeys(): void
+    {
+        $expected = [
+            'FOO',
+            'BAR',
+            'BAZ',
+            'FAB',
+            'FOB',
+        ];
+
+        $this->assertSame($expected, $this->enum::getKeys());
+    }
+
+    /**
+     * Assert the result of testGetValues()
+     */
+    public function testGetValues(): void
+    {
+        $expected = [
+            -1,
+            true,
+            1.223,
+            'hello',
+            1234,
+        ];
+
+        $this->assertSame($expected, $this->enum::getValues());
+    }
+
+    /**
+     * Assert that the class constant key can be returned by it's matched value, or NULL if non-existing
+     *
+     * @param mixed $expectedKey
+     * @param mixed $value
+     *
+     * @dataProvider getKeyByValueData
+     */
+    public function testGetKeyByValue($expectedKey, $value): void
+    {
+        $this->assertSame($expectedKey, $this->enum::getKeyByValue($value));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getKeyByValueData(): array
+    {
+        return [
+            [
+                'FOO',
+                -1,
+            ],
+            [
+                'BAR',
+                true,
+            ],
+            [
+                'FAB',
+                'hello',
+            ],
+            [
+                'BAZ',
+                1.223,
+            ],
+            [
+                null,
+                'not-valid-vale',
+            ],
+            [
+                null,
+                0,
+            ],
+        ];
+    }
+
+    /**
+     * Assert that the class constant value can be returned by it's matched key, or NULL if non-existing
+     *
+     * @param mixed  $expectedValue
+     * @param string $key
+     *
+     * @dataProvider getValueByKeyData
+     */
+    public function testGetValueByKey($expectedValue, string $key): void
+    {
+        $this->assertSame($expectedValue, $this->enum::getValueByKey($key));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getValueByKeyData(): array
+    {
+        return [
+            [
+                -1,
+                'FOO',
+            ],
+            [
+                true,
+                'BAR',
+            ],
+            [
+                'hello',
+                'FAB',
+            ],
+            [
+                1.223,
+                'BAZ',
+            ],
+            [
+                null,
+                'testing-not-found-value',
+            ],
+        ];
+    }
+
+    /**
+     * Assert the expected key is returned from getKey() when using instance based methods of the enum.
+     */
+    public function testGetKey(): void
+    {
+        $value = 1.223;
+        $expectedKey = 'BAZ';
+
+        $enum = new class($value) extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+
+        $this->assertSame($expectedKey, $enum->getKey());
+    }
+
+    /**
+     * Assert the expected value is returned from getValue() when using instance based methods of the enum.
+     *
+     * @param mixed $value
+     *
+     * @dataProvider getGetValueData
+     */
+    public function testGetValue($value): void
+    {
+        $enum = new class($value) extends AbstractEnum {
+            public const FOO = -1;
+            public const BAR = true;
+            public const BAZ = 1.223;
+            public const FAB = 'hello';
+            public const FOB = 1234;
+        };
+
+        $this->assertSame(
+            ($value instanceof EnumInterface) ? $value->getValue() : $value,
+            $enum->getValue()
+        );
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getGetValueData(): array
+    {
+        $value = true;
+        $enum = new class($value) extends AbstractEnum {
+            public const TEST = 'testing';
+            public const HELLO = true;
+            public const KEY_NAME = 'value123';
+            public const ANOTHER_KEY = 123;
+        };
+
+        return [
+            [
+                null,
+            ],
+            [
+                1234,
+            ],
+            [
+                'hello',
+            ],
+            [
+                -1,
+            ],
+            [
+                true,
+            ],
+            [
+                $enum
+            ]
+        ];
     }
 }
