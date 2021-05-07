@@ -244,7 +244,10 @@ class AbstractEnumTest extends TestCase
             public const FOB = 1234;
         };
 
-        $this->assertSame($value, $enum->getValue());
+        $this->assertSame(
+            ($value instanceof EnumInterface) ? $value->getValue() : $value,
+            $enum->getValue()
+        );
     }
 
     /**
@@ -252,6 +255,14 @@ class AbstractEnumTest extends TestCase
      */
     public function getGetValueData(): array
     {
+        $value = true;
+        $enum = new class($value) extends AbstractEnum {
+            public const TEST = 'testing';
+            public const HELLO = true;
+            public const KEY_NAME = 'value123';
+            public const ANOTHER_KEY = 123;
+        };
+
         return [
             [
                 null,
@@ -268,6 +279,9 @@ class AbstractEnumTest extends TestCase
             [
                 true,
             ],
+            [
+                $enum
+            ]
         ];
     }
 }

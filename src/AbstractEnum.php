@@ -27,7 +27,7 @@ abstract class AbstractEnum implements EnumInterface
      */
     public function __construct($value = null)
     {
-        if ($value instanceof static) {
+        if ($value instanceof EnumInterface) {
             $value = $value->getValue();
         }
 
