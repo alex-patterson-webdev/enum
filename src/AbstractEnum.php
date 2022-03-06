@@ -146,20 +146,14 @@ abstract class AbstractEnum implements EnumInterface
      * Return a key value map, with the array keys being the constant names with their associated constant values
      *
      * @return array<string, mixed>
+     * @throws \ReflectionException
      */
     public static function toArray(): array
     {
         $className = static::class;
 
         if (!isset(self::$constants[$className])) {
-            try {
-                /** @throws \ReflectionException $reflectionClass */
-                $reflectionClass = new \ReflectionClass($className);
-            } catch (\ReflectionException $e) {
-                return [];
-            }
-
-            self::$constants[$className] = $reflectionClass->getConstants();
+            self::$constants[$className] = (new \ReflectionClass($className))->getConstants();
         }
 
         return self::$constants[$className];
