@@ -12,6 +12,6 @@ Component library for Enum like classes
 
 Installation via [composer](https://getcomposer.org).
 
-    require alex-patterson-webdev/enum ^0.1
+    require alex-patterson-webdev/enum ^0.2
 
     
