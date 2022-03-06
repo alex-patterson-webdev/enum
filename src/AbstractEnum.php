@@ -39,7 +39,7 @@ abstract class AbstractEnum implements EnumInterface
      */
     public function getKey(): ?string
     {
-        return static::getKeyByValue($this->value);
+        return self::getKeyByValue($this->value);
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class AbstractEnum implements EnumInterface
     }
 
     /**
-     * Return an numerically indexed array of the constants names
+     * Return a numerically indexed array of the constants names
      *
      * @return array<int, string>
      */
@@ -121,9 +121,9 @@ abstract class AbstractEnum implements EnumInterface
      *
      * @param mixed $value
      *
-     * @return mixed
+     * @return string|null
      */
-    public static function getKeyByValue($value)
+    public static function getKeyByValue($value): ?string
     {
         $key = array_search($value, static::toArray(), true);
 
@@ -151,16 +151,17 @@ abstract class AbstractEnum implements EnumInterface
     {
         $className = static::class;
 
-        if (!isset(static::$constants[$className])) {
+        if (!isset(self::$constants[$className])) {
             try {
+                /** @throws \ReflectionException $reflectionClass */
                 $reflectionClass = new \ReflectionClass($className);
             } catch (\ReflectionException $e) {
                 return [];
             }
 
-            static::$constants[$className] = $reflectionClass->getConstants();
+            self::$constants[$className] = $reflectionClass->getConstants();
         }
 
-        return static::$constants[$className];
+        return self::$constants[$className];
     }
 }
