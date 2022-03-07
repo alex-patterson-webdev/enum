@@ -23,7 +23,7 @@ class AbstractEnumTest extends TestCase
 
     public function setUp(): void
     {
-        $this->enum = new class() extends AbstractEnum {
+        $this->enum = new class () extends AbstractEnum {
             public const FOO = -1;
             public const BAR = true;
             public const BAZ = 1.223;
@@ -52,7 +52,7 @@ class AbstractEnumTest extends TestCase
             sprintf('The value \'%s\' for enum class', $invalidValue)
         );
 
-        new class($invalidValue) extends AbstractEnum {
+        new class ($invalidValue) extends AbstractEnum {
             public const TRUE = 1;
             public const FALSE = 0;
             public const MAYBE = 2;
@@ -134,7 +134,7 @@ class AbstractEnumTest extends TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<int, mixed>
      */
     public function getKeyByValueData(): array
     {
@@ -180,7 +180,7 @@ class AbstractEnumTest extends TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<int, mixed>
      */
     public function getValueByKeyData(): array
     {
@@ -216,7 +216,7 @@ class AbstractEnumTest extends TestCase
         $value = 1.223;
         $expectedKey = 'BAZ';
 
-        $enum = new class($value) extends AbstractEnum {
+        $enum = new class ($value) extends AbstractEnum {
             public const FOO = -1;
             public const BAR = true;
             public const BAZ = 1.223;
@@ -236,7 +236,7 @@ class AbstractEnumTest extends TestCase
      */
     public function testGetValue($value): void
     {
-        $enum = new class($value) extends AbstractEnum {
+        $enum = new class ($value) extends AbstractEnum {
             public const FOO = -1;
             public const BAR = true;
             public const BAZ = 1.223;
@@ -255,8 +255,7 @@ class AbstractEnumTest extends TestCase
      */
     public function getGetValueData(): array
     {
-        $value = true;
-        $enum = new class($value) extends AbstractEnum {
+        $enum = new class (true) extends AbstractEnum {
             public const TEST = 'testing';
             public const HELLO = true;
             public const KEY_NAME = 'value123';
